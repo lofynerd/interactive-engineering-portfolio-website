@@ -1,0 +1,11 @@
+export const profile = {
+  name: 'Arpan Raj',
+  roles: ['Cloud Architect', 'Full Stack Dev', 'AWS Engineer'],
+  tagline: 'Building products that scale—and systems that last.',
+  location: 'Delhi',
+  email: 'aarpanrajeshweta@gmail.com',
+  github: 'https://github.com/lofynerd',
+  githubUsername: 'lofynerd',
+  linkedin: 'https://linkedin.com/in/arpan-raj',
+  quote: '"Good architecture is invisible until it isn\u2019t there."',
+}
