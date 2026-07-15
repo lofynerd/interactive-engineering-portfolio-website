@@ -80,7 +80,8 @@ export default function Navbar() {
             <MagneticButton
               as="a"
               href={resumeUrl}
-              download
+              target="_blank"
+              rel="noreferrer"
               data-cursor-hover
               className="inline-flex items-center rounded-full bg-white text-black text-sm font-medium px-4 py-2 transition-shadow hover:shadow-glow"
             >
@@ -135,10 +136,11 @@ export default function Navbar() {
               <motion.li initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.05 * navLinks.length }}>
                 <a
                   href={resumeUrl}
-                  download
+                  target="_blank"
+                  rel="noreferrer"
                   className="inline-flex items-center rounded-full bg-white text-black text-sm font-medium px-5 py-2.5 mt-2"
                 >
-                  Download Resume
+                  View Resume
                 </a>
               </motion.li>
             </ul>

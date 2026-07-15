@@ -1,7 +1,7 @@
 export const experience = [
   {
     id: "tomasi-tech-lead",
-    role: "Tech Lead",
+    role: "Lead Software Engineer",
     company: "Tomasi Design",
     period: "2024 — Present",
     achievements: [

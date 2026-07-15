@@ -1,3 +1,5 @@
+import resumePdf from '../assets/Latest-Resume.pdf'
+
 export const navLinks = [
   { id: 'home', label: 'Home', href: '#home' },
   { id: 'about', label: 'About', href: '#about' },
@@ -10,4 +12,5 @@ export const navLinks = [
   { id: 'contact', label: 'Contact', href: '#contact' },
 ]
 
-export const resumeUrl = '/resume.pdf'
+// Bundled locally so it's always reachable without S3 permissions/CORS.
+export const resumeUrl = resumePdf

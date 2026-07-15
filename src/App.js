@@ -23,7 +23,7 @@ function App() {
   const [introDone, setIntroDone] = useState(false)
 
   useEffect(() => {
-    document.title = 'Your Name — Cloud Architect & Full Stack Developer'
+    document.title = 'Arpan Raj — Cloud Architect & Full Stack Developer'
   }, [])
 
   useEffect(() => {

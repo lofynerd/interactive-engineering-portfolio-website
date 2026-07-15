@@ -2,7 +2,7 @@ import RevealOnScroll from '../components/ui/RevealOnScroll'
 import AnimatedCounter from '../components/ui/AnimatedCounter'
 
 const stats = [
-  { value: 3, suffix: '+', label: 'Years building production software' },
+  { value: 2, suffix: '+', label: 'Years building production software' },
   { value: 2, suffix: '', label: 'Projects shipped end-to-end' },
   { value: 1, suffix: '', label: 'AWS certification earned' },
 ]
@@ -26,7 +26,7 @@ export default function About() {
             </RevealOnScroll>
             <RevealOnScroll delay={0.1}>
               <p>
-                Today I'm Tech Lead at Tomasi Design, where I oversee everything from our React front end to the AWS back end (CloudFront, S3, Lambda, IAM and the CI/CD pipelines in between). 
+                Today I'm the Lead Software Engineer at Tomasi Design, where I oversee everything from our React front end to the AWS back end (CloudFront, S3, Lambda, IAM and the CI/CD pipelines in between). 
               </p>
             </RevealOnScroll>
             <RevealOnScroll delay={0.2}>

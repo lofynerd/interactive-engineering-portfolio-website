@@ -15,7 +15,7 @@ export default function Hero() {
     >
       <AuroraBackground />
 
-      <div className="section-container relative z-10 grid lg:grid-cols-[1.2fr_0.8fr] gap-16 lg:gap-20 items-center">
+      <div className="section-container relative z-10 grid lg:grid-cols-[1.5fr_0.8fr] gap-16 lg:gap-20 items-center">
         <div>
           <motion.p
             initial={{ opacity: 0, y: 12 }}
@@ -63,7 +63,8 @@ export default function Hero() {
             <MagneticButton
               as="a"
               href={resumeUrl}
-              download
+              target="_blank"
+              rel="noreferrer"
               data-cursor-hover
               className="inline-flex items-center rounded-full border border-border-subtle text-white text-sm font-medium px-6 py-3.5 glass hover:border-white/20"
             >
