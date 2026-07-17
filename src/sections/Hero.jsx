@@ -1,12 +1,12 @@
 import { motion } from 'framer-motion'
 import { FiArrowDown } from 'react-icons/fi'
-import posthog from 'posthog-js'
 import { profile } from '../data/profile'
 import { resumeUrl } from '../data/nav'
 import AuroraBackground from '../components/ui/AuroraBackground'
 import MagneticButton from '../components/ui/MagneticButton'
 import TypingText from '../components/ui/TypingText'
 import portraitImg from '../assets/Portfolio.jpeg'
+import { trackHeroCta, trackResumeOpened } from '../lib/analytics'
 
 export default function Hero() {
   return (
@@ -57,7 +57,7 @@ export default function Hero() {
               as="a"
               href="#projects"
               data-cursor-hover
-              onClick={() => posthog.capture('hero_cta_clicked', { cta: 'view_projects' })}
+              onClick={() => trackHeroCta('view_projects')}
               className="inline-flex items-center rounded-full bg-white text-black text-sm font-medium px-6 py-3.5 transition-shadow hover:shadow-glow"
             >
               View Projects
@@ -68,7 +68,7 @@ export default function Hero() {
               target="_blank"
               rel="noreferrer"
               data-cursor-hover
-              onClick={() => posthog.capture('resume_downloaded', { source: 'hero' })}
+              onClick={() => trackResumeOpened('hero')}
               className="inline-flex items-center rounded-full border border-border-subtle text-white text-sm font-medium px-6 py-3.5 glass hover:border-white/20"
             >
               Download Resume
@@ -77,7 +77,7 @@ export default function Hero() {
               as="a"
               href="#contact"
               data-cursor-hover
-              onClick={() => posthog.capture('hero_cta_clicked', { cta: 'contact_me' })}
+              onClick={() => trackHeroCta('contact_me')}
               className="inline-flex items-center text-sm font-medium px-2 py-3.5 text-text-secondary hover:text-white transition-colors"
             >
               Contact Me &rarr;

@@ -1,6 +1,6 @@
 import { FiGithub, FiLinkedin, FiMail } from 'react-icons/fi'
-import posthog from 'posthog-js'
 import { profile } from '../../data/profile'
+import { trackFooterSocialClicked } from '../../lib/analytics'
 
 export default function Footer() {
   const year = new Date().getFullYear()
@@ -20,7 +20,7 @@ export default function Footer() {
               rel="noreferrer"
               data-cursor-hover
               aria-label="GitHub"
-              onClick={() => posthog.capture('footer_social_clicked', { platform: 'github' })}
+              onClick={() => trackFooterSocialClicked('github')}
               className="w-10 h-10 rounded-full glass flex items-center justify-center text-text-secondary hover:text-white hover:-translate-y-0.5 transition-all duration-300"
             >
               <FiGithub />
@@ -31,7 +31,7 @@ export default function Footer() {
               rel="noreferrer"
               data-cursor-hover
               aria-label="LinkedIn"
-              onClick={() => posthog.capture('footer_social_clicked', { platform: 'linkedin' })}
+              onClick={() => trackFooterSocialClicked('linkedin')}
               className="w-10 h-10 rounded-full glass flex items-center justify-center text-text-secondary hover:text-white hover:-translate-y-0.5 transition-all duration-300"
             >
               <FiLinkedin />
@@ -40,7 +40,7 @@ export default function Footer() {
               href={`mailto:${profile.email}`}
               data-cursor-hover
               aria-label="Email"
-              onClick={() => posthog.capture('footer_social_clicked', { platform: 'email' })}
+              onClick={() => trackFooterSocialClicked('email')}
               className="w-10 h-10 rounded-full glass flex items-center justify-center text-text-secondary hover:text-white hover:-translate-y-0.5 transition-all duration-300"
             >
               <FiMail />

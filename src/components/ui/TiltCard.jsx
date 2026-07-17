@@ -4,7 +4,7 @@ import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion'
 /**
  * A card that tilts subtly toward the cursor position (3D-ish perspective tilt).
  */
-export default function TiltCard({ children, className = '', maxTilt = 8 }) {
+export default function TiltCard({ children, className = '', maxTilt = 8, ...props }) {
   const ref = useRef(null)
   const x = useMotionValue(0)
   const y = useMotionValue(0)
@@ -35,6 +35,7 @@ export default function TiltCard({ children, className = '', maxTilt = 8 }) {
       onMouseLeave={handleMouseLeave}
       style={{ rotateX, rotateY, transformPerspective: 800 }}
       className={className}
+      {...props}
     >
       {children}
     </motion.div>

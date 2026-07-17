@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react'
 import { AnimatePresence } from 'framer-motion'
 import { ThemeProvider } from './context/ThemeContext'
 import { useLenis } from './hooks/useLenis'
+import { useSectionTracking } from './hooks/useSectionTracking'
+import { navLinks } from './data/nav'
 import Navbar from './components/layout/Navbar'
 import Footer from './components/layout/Footer'
 import CustomCursor from './components/ui/CustomCursor'
@@ -18,9 +20,15 @@ import Timeline from './sections/Timeline'
 import Quote from './sections/Quote'
 import Contact from './sections/Contact'
 
+const trackedSectionIds = [...navLinks.map((link) => link.id), 'quote']
+
 function App() {
   useLenis()
   const [introDone, setIntroDone] = useState(false)
+
+  // Sections only exist in the DOM once the intro overlay is gone, so wait
+  // for that before observing them.
+  useSectionTracking(introDone ? trackedSectionIds : [])
 
   useEffect(() => {
     document.title = 'Arpan Raj — Cloud Architect & Full Stack Developer'

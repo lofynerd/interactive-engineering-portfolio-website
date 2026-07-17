@@ -1,6 +1,6 @@
 import { useRef, useEffect } from 'react'
 import { motion, useInView } from 'framer-motion'
-import posthog from 'posthog-js'
+import { trackEvent, trackArchitectureNodeHovered } from '../lib/analytics'
 import {
   FiCloud,
   FiDatabase,
@@ -33,7 +33,7 @@ export default function Architecture() {
 
   useEffect(() => {
     if (isInView) {
-      posthog.capture('architecture_section_viewed')
+      trackEvent('architecture_section_viewed')
     }
   }, [isInView])
 
@@ -62,6 +62,7 @@ export default function Architecture() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={isInView ? { opacity: 1, y: 0 } : {}}
                 transition={{ duration: 0.5, delay: i * 0.08, ease: [0.16, 1, 0.3, 1] }}
+                onMouseEnter={() => trackArchitectureNodeHovered(node.id)}
                 className="relative rounded-xl2 glass p-5 flex flex-col items-start gap-3 hover:border-accent-cyan/30 border border-transparent transition-colors duration-300"
               >
                 <div className="w-10 h-10 rounded-full bg-accent-cyan/10 text-accent-cyan flex items-center justify-center">

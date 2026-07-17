@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { HiMenu, HiX } from 'react-icons/hi'
-import posthog from 'posthog-js'
 import { navLinks, resumeUrl } from '../../data/nav'
 import MagneticButton from '../ui/MagneticButton'
+import { trackNavClick, trackResumeOpened } from '../../lib/analytics'
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false)
@@ -58,7 +58,7 @@ export default function Navbar() {
                 <a
                   href={link.href}
                   data-cursor-hover
-                  onClick={() => posthog.capture('nav_link_clicked', { section: link.id, label: link.label })}
+                  onClick={() => trackNavClick(link.id, link.label)}
                   className={`relative px-3.5 py-2 text-sm rounded-full transition-colors duration-300 ${
                     activeSection === link.id
                       ? 'text-white'
@@ -85,7 +85,7 @@ export default function Navbar() {
               target="_blank"
               rel="noreferrer"
               data-cursor-hover
-              onClick={() => posthog.capture('resume_downloaded', { source: 'navbar' })}
+              onClick={() => trackResumeOpened('navbar')}
               className="inline-flex items-center rounded-full bg-white text-black text-sm font-medium px-4 py-2 transition-shadow hover:shadow-glow"
             >
               Resume
@@ -129,7 +129,10 @@ export default function Navbar() {
                 >
                   <a
                     href={link.href}
-                    onClick={() => { setMobileOpen(false); posthog.capture('nav_link_clicked', { section: link.id, label: link.label, source: 'mobile_menu' }) }}
+                    onClick={() => {
+                      setMobileOpen(false)
+                      trackNavClick(link.id, link.label)
+                    }}
                     className="text-2xl font-display text-white"
                   >
                     {link.label}
@@ -141,7 +144,7 @@ export default function Navbar() {
                   href={resumeUrl}
                   target="_blank"
                   rel="noreferrer"
-                  onClick={() => posthog.capture('resume_downloaded', { source: 'mobile_menu' })}
+                  onClick={() => trackResumeOpened('mobile_menu')}
                   className="inline-flex items-center rounded-full bg-white text-black text-sm font-medium px-5 py-2.5 mt-2"
                 >
                   View Resume

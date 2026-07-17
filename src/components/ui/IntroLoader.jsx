@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion'
-import posthog from 'posthog-js'
 import portraitImg from '../../assets/Portfolio.jpeg'
+import { trackEvent } from '../../lib/analytics'
 
 /**
  * Full-screen intro overlay shown on first load.
@@ -13,7 +13,7 @@ import portraitImg from '../../assets/Portfolio.jpeg'
  */
 export default function IntroLoader({ onSkip }) {
   function handleSkip() {
-    posthog.capture('intro_skipped')
+    trackEvent('intro_skipped')
     onSkip()
   }
 

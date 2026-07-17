@@ -1,8 +1,8 @@
 import { FiGithub, FiLinkedin, FiMail } from 'react-icons/fi'
-import posthog from 'posthog-js'
 import { profile } from '../data/profile'
 import RevealOnScroll from '../components/ui/RevealOnScroll'
 import MagneticButton from '../components/ui/MagneticButton'
+import { trackContactChannelClicked } from '../lib/analytics'
 
 const links = [
   { icon: FiMail, label: 'Email', value: profile.email, href: `mailto:${profile.email}` },
@@ -36,7 +36,7 @@ export default function Contact() {
                 target={link.external ? '_blank' : undefined}
                 rel={link.external ? 'noreferrer' : undefined}
                 data-cursor-hover
-                onClick={() => posthog.capture('contact_link_clicked', { channel: link.label.toLowerCase() })}
+                onClick={() => trackContactChannelClicked(link.label.toLowerCase())}
                 className="group flex flex-col items-start gap-4 rounded-xl3 glass p-6 h-full hover:border-white/20 border border-transparent transition-colors duration-300"
               >
                 <span className="w-11 h-11 rounded-full bg-white/5 flex items-center justify-center text-white group-hover:text-accent-cyan transition-colors duration-300">
