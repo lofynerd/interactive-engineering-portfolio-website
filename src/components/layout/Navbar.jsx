@@ -58,6 +58,7 @@ export default function Navbar() {
                 <a
                   href={link.href}
                   data-cursor-hover
+                  onClick={() => posthog.capture('nav_link_clicked', { section: link.id, label: link.label })}
                   className={`relative px-3.5 py-2 text-sm rounded-full transition-colors duration-300 ${
                     activeSection === link.id
                       ? 'text-white'
@@ -128,7 +129,7 @@ export default function Navbar() {
                 >
                   <a
                     href={link.href}
-                    onClick={() => setMobileOpen(false)}
+                    onClick={() => { setMobileOpen(false); posthog.capture('nav_link_clicked', { section: link.id, label: link.label, source: 'mobile_menu' }) }}
                     className="text-2xl font-display text-white"
                   >
                     {link.label}

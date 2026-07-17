@@ -1,5 +1,6 @@
-import { useRef } from 'react'
+import { useRef, useEffect } from 'react'
 import { motion, useInView } from 'framer-motion'
+import posthog from 'posthog-js'
 import {
   FiCloud,
   FiDatabase,
@@ -29,6 +30,12 @@ const flow = [
 export default function Architecture() {
   const containerRef = useRef(null)
   const isInView = useInView(containerRef, { once: true, amount: 0.2 })
+
+  useEffect(() => {
+    if (isInView) {
+      posthog.capture('architecture_section_viewed')
+    }
+  }, [isInView])
 
   return (
     <section id="architecture" className="relative py-28 md:py-36 bg-bg-secondary">
