@@ -1,4 +1,5 @@
 import { FiAward, FiClock, FiExternalLink } from 'react-icons/fi'
+import posthog from 'posthog-js'
 import { certifications } from '../data/certifications'
 import RevealOnScroll from '../components/ui/RevealOnScroll'
 import TiltCard from '../components/ui/TiltCard'
@@ -53,6 +54,7 @@ export default function Certifications() {
                         rel="noreferrer"
                         data-cursor-hover
                         aria-label={`View credential for ${cert.title}`}
+                        onClick={() => posthog.capture('certification_credential_clicked', { cert_id: cert.id, cert_title: cert.title, cert_issuer: cert.issuer })}
                         className="text-text-secondary hover:text-white transition-colors"
                       >
                         <FiExternalLink size={14} />
