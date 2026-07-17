@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion'
+import posthog from 'posthog-js'
 import portraitImg from '../../assets/Portfolio.jpeg'
 
 /**
@@ -11,13 +12,18 @@ import portraitImg from '../../assets/Portfolio.jpeg'
  * the Hero grid — producing a seamless "zoom out into the page" effect.
  */
 export default function IntroLoader({ onSkip }) {
+  function handleSkip() {
+    posthog.capture('intro_skipped')
+    onSkip()
+  }
+
   return (
     <motion.div
       key="intro-loader"
       initial={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-      onClick={onSkip}
+      onClick={handleSkip}
       className="fixed inset-0 z-[200] bg-bg flex items-center justify-center cursor-pointer"
     >
       <motion.div
