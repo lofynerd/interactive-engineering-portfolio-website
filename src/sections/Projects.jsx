@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { FiGithub, FiExternalLink, FiX } from 'react-icons/fi'
+import posthog from 'posthog-js'
 import { projects } from '../data/projects'
 import RevealOnScroll from '../components/ui/RevealOnScroll'
 import TiltCard from '../components/ui/TiltCard'
@@ -29,7 +30,7 @@ export default function Projects() {
                   project.comingSoon ? 'opacity-60' : ''
                 }`}
               >
-                <div onClick={() => !project.comingSoon && setSelected(project)} data-cursor-hover>
+                <div onClick={() => { if (!project.comingSoon) { setSelected(project); posthog.capture('project_details_viewed', { project_id: project.id, project_title: project.title }) } }} data-cursor-hover>
                   <div className="relative rounded-xl2 bg-white/5 h-44 mb-5 flex items-center justify-center text-text-secondary text-sm overflow-hidden">
                     {project.image ? (
                       <img
@@ -51,7 +52,7 @@ export default function Projects() {
                         href={project.liveUrl}
                         target="_blank"
                         rel="noreferrer"
-                        onClick={(e) => e.stopPropagation()}
+                        onClick={(e) => { e.stopPropagation(); posthog.capture('project_demo_clicked', { project_id: project.id, project_title: project.title }) }}
                         data-cursor-hover
                         aria-label={`Visit ${project.title} live site`}
                         className="absolute inset-0"
@@ -96,6 +97,7 @@ export default function Projects() {
                           target="_blank"
                           rel="noreferrer"
                           data-cursor-hover
+                          onClick={() => posthog.capture('project_github_clicked', { project_id: project.id, project_title: project.title })}
                           className="hover:text-white transition-colors"
                           aria-label="GitHub repository"
                         >
@@ -108,6 +110,7 @@ export default function Projects() {
                           target="_blank"
                           rel="noreferrer"
                           data-cursor-hover
+                          onClick={() => posthog.capture('project_demo_clicked', { project_id: project.id, project_title: project.title })}
                           className="hover:text-white transition-colors"
                           aria-label="Live demo"
                         >

@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { HiMenu, HiX } from 'react-icons/hi'
+import posthog from 'posthog-js'
 import { navLinks, resumeUrl } from '../../data/nav'
 import MagneticButton from '../ui/MagneticButton'
 
@@ -83,6 +84,7 @@ export default function Navbar() {
               target="_blank"
               rel="noreferrer"
               data-cursor-hover
+              onClick={() => posthog.capture('resume_downloaded', { source: 'navbar' })}
               className="inline-flex items-center rounded-full bg-white text-black text-sm font-medium px-4 py-2 transition-shadow hover:shadow-glow"
             >
               Resume
@@ -138,6 +140,7 @@ export default function Navbar() {
                   href={resumeUrl}
                   target="_blank"
                   rel="noreferrer"
+                  onClick={() => posthog.capture('resume_downloaded', { source: 'mobile_menu' })}
                   className="inline-flex items-center rounded-full bg-white text-black text-sm font-medium px-5 py-2.5 mt-2"
                 >
                   View Resume
