@@ -71,7 +71,7 @@ export default function Hero() {
               onClick={() => trackResumeOpened('hero')}
               className="inline-flex items-center rounded-full border border-border-subtle text-white text-sm font-medium px-6 py-3.5 glass hover:border-white/20"
             >
-              Download Resume
+              View Resume
             </MagneticButton>
             <MagneticButton
               as="a"
