@@ -1,6 +1,6 @@
 export const profile = {
   name: 'Arpan Raj',
-  roles: ['Cloud Architect', 'Full Stack Dev', 'AWS Engineer'],
+  roles: ['Cloud Engineer', 'Full Stack Dev', 'AWS Engineer'],
   tagline: 'Building products that scale—and systems that last.',
   location: 'Delhi',
   email: 'workwitharpanraj@gmail.com',

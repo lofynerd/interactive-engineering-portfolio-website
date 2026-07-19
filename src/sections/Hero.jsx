@@ -55,24 +55,26 @@ export default function Hero() {
           >
             <MagneticButton
               as="a"
-              href="#projects"
-              data-cursor-hover
-              onClick={() => trackHeroCta('view_projects')}
-              className="inline-flex items-center rounded-full bg-white text-black text-sm font-medium px-6 py-3.5 transition-shadow hover:shadow-glow"
-            >
-              View Projects
-            </MagneticButton>
-            <MagneticButton
-              as="a"
               href={resumeUrl}
               target="_blank"
               rel="noreferrer"
               data-cursor-hover
               onClick={() => trackResumeOpened('hero')}
-              className="inline-flex items-center rounded-full border border-border-subtle text-white text-sm font-medium px-6 py-3.5 glass hover:border-white/20"
+              className="inline-flex items-center rounded-full bg-white text-black text-sm font-medium px-6 py-3.5 transition-shadow hover:shadow-glow"
             >
               View Resume
             </MagneticButton>
+            <MagneticButton
+              as="a"
+              href="#projects"
+              data-cursor-hover
+              onClick={() => trackHeroCta('view_projects')}
+              
+              className="inline-flex items-center rounded-full border border-border-subtle text-white text-sm font-medium px-6 py-3.5 glass hover:border-white/20"
+            >
+              View Projects
+            </MagneticButton>
+            
             <MagneticButton
               as="a"
               href="#contact"
