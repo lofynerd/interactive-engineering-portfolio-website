@@ -1,0 +1,8 @@
+{
+  "name": "scheduler-lambda",
+  "version": "1.0.0",
+  "private": true,
+  "dependencies": {
+    "@aws-sdk/client-ecs": "3.1104.0"
+  }
+}

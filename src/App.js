@@ -9,6 +9,7 @@ import Footer from './components/layout/Footer'
 import CustomCursor from './components/ui/CustomCursor'
 import ScrollProgressBar from './components/ui/ScrollProgressBar'
 import IntroLoader from './components/ui/IntroLoader'
+import BreakItDemo from './components/ui/BreakItDemo'
 import Hero from './sections/Hero'
 import About from './sections/About'
 import Experience from './sections/Experience'
@@ -24,6 +25,7 @@ const trackedSectionIds = [...navLinks.map((link) => link.id), 'quote']
 
 function App() {
   useLenis()
+  const [demoDone, setDemoDone] = useState(false)
   const [introDone, setIntroDone] = useState(false)
 
   // Sections only exist in the DOM once the intro overlay is gone, so wait
@@ -35,18 +37,20 @@ function App() {
   }, [])
 
   useEffect(() => {
-    // Lock scroll while the intro overlay is visible.
+    // Lock scroll while the demo/intro overlays are visible.
     document.body.style.overflow = introDone ? '' : 'hidden'
-    if (introDone) return
+    if (!demoDone || introDone) return
 
     const timer = setTimeout(() => setIntroDone(true), 600)
     return () => clearTimeout(timer)
-  }, [introDone])
+  }, [demoDone, introDone])
 
   return (
     <ThemeProvider>
       <AnimatePresence>
-        {!introDone ? (
+        {!demoDone ? (
+          <BreakItDemo key="break-it-demo" onContinue={() => setDemoDone(true)} />
+        ) : !introDone ? (
           <IntroLoader key="loader" onSkip={() => setIntroDone(true)} />
         ) : (
           <div key="site">

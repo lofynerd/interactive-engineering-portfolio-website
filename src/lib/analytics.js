@@ -72,3 +72,29 @@ export function trackArchitectureNodeHovered(nodeId) {
 export function trackSkillCategoryViewed(categoryId) {
   trackEvent('skill_category_viewed', { category: categoryId })
 }
+
+// --- Break-it / self-healing infrastructure demo -------------------------
+// These are the events referenced when reviewing PostHog session replays
+// to see how many visitors actually tried the demo, and what happened
+// when they did.
+
+export function trackBreakItViewed() {
+  trackEvent('break_it_demo_viewed')
+}
+
+export function trackBreakItClicked() {
+  trackEvent('break_it_clicked')
+}
+
+export function trackBreakItResult(status, extra = {}) {
+  // status: 'breaking' | 'cooldown' | 'offline' | 'error'
+  trackEvent('break_it_result', { status, ...extra })
+}
+
+export function trackBreakItHealed(durationMs) {
+  trackEvent('break_it_healed', { duration_ms: durationMs })
+}
+
+export function trackBreakItSkipped() {
+  trackEvent('break_it_skipped')
+}
