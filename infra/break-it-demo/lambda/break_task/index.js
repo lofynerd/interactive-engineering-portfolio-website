@@ -46,7 +46,7 @@ function corsHeaders(origin) {
   return {
     'Access-Control-Allow-Origin': allowed,
     'Access-Control-Allow-Methods': 'POST,OPTIONS',
-    'Access-Control-Allow-Headers': 'Content-Type',
+    'Access-Control-Allow-Headers': 'Content-Type,X-Api-Key',
   }
 }
 
@@ -67,11 +67,15 @@ function respond(statusCode, body, origin) {
 exports.handler = async (event) => {
   const origin = event.headers?.origin || event.headers?.Origin || ''
 
-  if (event.requestContext?.http?.method === 'OPTIONS') {
+  // REST API (v1) proxy integrations put the method on event.httpMethod,
+  // not event.requestContext.http.method (that's the HTTP API/v2 shape).
+  if (event.httpMethod === 'OPTIONS') {
     return respond(204, {}, origin)
   }
 
-  const sourceIp = event.requestContext?.http?.sourceIp || 'unknown'
+  // REST API (v1) puts the caller's IP at requestContext.identity.sourceIp,
+  // not requestContext.http.sourceIp (that's the HTTP API/v2 shape).
+  const sourceIp = event.requestContext?.identity?.sourceIp || 'unknown'
   const ipHash = hashIp(sourceIp)
   const now = Math.floor(Date.now() / 1000)
 

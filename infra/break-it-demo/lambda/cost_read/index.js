@@ -14,7 +14,11 @@ const ddb = DynamoDBDocumentClient.from(new DynamoDBClient({ region: REGION }))
 
 function corsHeaders(origin) {
   const allowed = ALLOWED_ORIGINS.includes(origin) ? origin : ALLOWED_ORIGINS[0] || '*'
-  return { 'Access-Control-Allow-Origin': allowed, 'Access-Control-Allow-Methods': 'GET,OPTIONS' }
+  return {
+    'Access-Control-Allow-Origin': allowed,
+    'Access-Control-Allow-Methods': 'GET,OPTIONS',
+    'Access-Control-Allow-Headers': 'Content-Type,X-Api-Key',
+  }
 }
 
 function respond(statusCode, body, origin) {
@@ -27,7 +31,9 @@ function respond(statusCode, body, origin) {
 
 exports.handler = async (event) => {
   const origin = event.headers?.origin || event.headers?.Origin || ''
-  if (event.requestContext?.http?.method === 'OPTIONS') return respond(204, {}, origin)
+  // REST API (v1) proxy integrations put the method on event.httpMethod,
+  // not event.requestContext.http.method (that's the HTTP API/v2 shape).
+  if (event.httpMethod === 'OPTIONS') return respond(204, {}, origin)
 
   try {
     const cached = await ddb.send(

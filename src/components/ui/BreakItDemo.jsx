@@ -142,6 +142,7 @@ export default function BreakItDemo({ onContinue }) {
       exit={{ opacity: 0 }}
       transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
       className="fixed inset-0 z-[210] bg-bg overflow-y-auto"
+      data-lenis-prevent
     >
       <AuroraBackground />
 
