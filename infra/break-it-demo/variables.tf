@@ -32,9 +32,9 @@ variable "break_cooldown_seconds" {
 }
 
 variable "waf_rate_limit_per_5min" {
-  description = "Max requests per 5-minute window per IP before WAF blocks it (WAF's minimum is 10)."
+  description = "Max requests per 5-minute window per IP before WAF blocks it (WAF's minimum is 10). Sized well above a single visitor's steady /status polling (6s interval = ~50 req/5min) so normal usage never gets close to the abuse threshold, while still blocking real scripted abuse."
   type        = number
-  default     = 60
+  default     = 200
 }
 
 variable "daily_request_quota" {

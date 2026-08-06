@@ -22,7 +22,9 @@ import {
   trackBreakItSkipped,
 } from '../../lib/analytics'
 
-const STATUS_POLL_MS = 3000
+// 6s (not 3s) keeps a single visitor's steady polling well under the WAF
+// rate-based rule's per-5-minute threshold — see waf_rate_limit_per_5min.
+const STATUS_POLL_MS = 6000
 const COST_POLL_MS = 5 * 60 * 1000
 // TEMPORARY: hides the "9am-9pm IST" scheduling disclaimer while the demo
 // is running always-on for the trial window. Flip REACT_APP_BREAK_IT_ALWAYS_ON
