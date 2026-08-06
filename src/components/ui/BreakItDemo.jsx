@@ -24,6 +24,10 @@ import {
 
 const STATUS_POLL_MS = 3000
 const COST_POLL_MS = 5 * 60 * 1000
+// TEMPORARY: hides the "9am-9pm IST" scheduling disclaimer while the demo
+// is running always-on for the trial window. Flip REACT_APP_BREAK_IT_ALWAYS_ON
+// back off (or unset it) once reverting to the normal daily schedule.
+const ALWAYS_ON = process.env.REACT_APP_BREAK_IT_ALWAYS_ON === 'true'
 
 /**
  * Full-viewport gate shown before the portrait/intro sequence: a live,
@@ -242,8 +246,9 @@ export default function BreakItDemo({ onContinue }) {
               Continue to portfolio <FiChevronDown />
             </button>
             <p className="text-xs text-text-secondary/70 text-center max-w-md">
-              Runs on a dedicated, isolated AWS ECS Fargate service — 9am–9pm IST daily.
-              It can't affect (and isn't affected by) anything else on this site.
+              Runs on a dedicated, isolated AWS ECS Fargate service.
+              {!ALWAYS_ON && ' Active 9am\u20139pm IST daily.'} It can't affect (and
+              isn't affected by) anything else on this site.
             </p>
           </motion.div>
         </div>
@@ -264,7 +269,7 @@ function StatusPill({ online, healthy, status }) {
   if (!online) {
     return (
       <span className="inline-flex items-center gap-2 text-xs font-mono uppercase tracking-widest text-text-secondary bg-white/5 border border-white/10 rounded-full px-4 py-2">
-        <FiWifiOff /> Offline — active 9am–9pm IST
+        <FiWifiOff /> {ALWAYS_ON ? 'Offline' : 'Offline — active 9am–9pm IST'}
       </span>
     )
   }

@@ -72,3 +72,9 @@ variable "scale_down_hour_ist" {
   type        = number
   default     = 21
 }
+
+variable "demo_always_on" {
+  description = "TEMPORARY testing toggle. When true, disables the 9am/9pm IST scale schedules (service stays up 24/7 regardless of hour) and the frontend hides the '9am-9pm IST' disclaimer. Meant to be flipped back to false after the trial window — set desired_task_count manually to 0/2 as needed when toggling."
+  type        = bool
+  default     = false
+}

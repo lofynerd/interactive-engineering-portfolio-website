@@ -9,6 +9,10 @@ resource "aws_scheduler_schedule" "scale_up" {
   name       = "${local.name_prefix}-scale-up"
   group_name = "default"
 
+  # Disabled while demo_always_on is true so the service isn't forced
+  # back down/up on the normal 9am/9pm cadence during the trial window.
+  state = var.demo_always_on ? "DISABLED" : "ENABLED"
+
   flexible_time_window {
     mode = "OFF"
   }
@@ -56,6 +60,9 @@ resource "aws_scheduler_schedule" "cost_sync" {
 resource "aws_scheduler_schedule" "scale_down" {
   name       = "${local.name_prefix}-scale-down"
   group_name = "default"
+
+  # Disabled while demo_always_on is true — see scale_up above.
+  state = var.demo_always_on ? "DISABLED" : "ENABLED"
 
   flexible_time_window {
     mode = "OFF"
