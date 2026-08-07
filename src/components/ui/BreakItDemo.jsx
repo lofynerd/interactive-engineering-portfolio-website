@@ -156,10 +156,17 @@ export default function BreakItDemo({ onContinue }) {
 
   const online = status?.online
   const healthy = online && status?.runningCount >= status?.desiredCount
-  // 'breaking' the instant the click lands (task not yet stopped in ECS's
-  // own view), 'recovering' once ECS reports a replacement provisioning.
-  const phase = breaking ? (status?.pendingCount > 0 ? 'recovering' : 'breaking') : 'idle'
-  const architecturePhase = breaking ? phase : healthy ? 'healed' : 'idle'
+  // The diagram must reflect SERVER truth, not just this browser's local
+  // `breaking` flag — otherwise a page reload, a second tab, or someone
+  // else's break leaves the diagram stuck showing "idle" while the
+  // status pill above correctly shows "Recovering". Any online-but-not-
+  // fully-healthy state greys out the task node, regardless of who
+  // triggered it or whether this session even saw the click happen.
+  const architecturePhase = !online
+    ? 'idle'
+    : !healthy
+      ? 'recovering'
+      : 'healed'
 
   return (
     <motion.div
