@@ -13,6 +13,7 @@ import {
 } from 'react-icons/fi'
 import AuroraBackground from './AuroraBackground'
 import MagneticButton from './MagneticButton'
+import BreakItArchitecture from './BreakItArchitecture'
 import { fetchStatus, fetchCost, breakSomething, isBreakItConfigured } from '../../lib/breakItApi'
 import {
   trackBreakItViewed,
@@ -48,8 +49,23 @@ export default function BreakItDemo({ onContinue }) {
   const [cost, setCost] = useState(null)
   const [breaking, setBreaking] = useState(false)
   const [message, setMessage] = useState(null) // { type: 'info'|'error', text }
+  const [elapsedMs, setElapsedMs] = useState(0)
+  const [lastHealDurationMs, setLastHealDurationMs] = useState(null)
   const breakStartedAt = useRef(null)
   const wasHealthyRef = useRef(true)
+
+  // Live-ticking "time since break" timer, shown so visitors don't have to
+  // guess how long recovery takes — it counts up while breaking/recovering
+  // and freezes the instant healed() fires below.
+  useEffect(() => {
+    if (!breaking) return
+    const tick = () => {
+      if (breakStartedAt.current) setElapsedMs(Date.now() - breakStartedAt.current)
+    }
+    tick()
+    const id = setInterval(tick, 200)
+    return () => clearInterval(id)
+  }, [breaking])
 
   useEffect(() => {
     trackBreakItViewed()
@@ -66,6 +82,7 @@ export default function BreakItDemo({ onContinue }) {
         trackBreakItHealed(durationMs)
         breakStartedAt.current = null
         setBreaking(false)
+        setLastHealDurationMs(durationMs)
         setMessage({ type: 'info', text: 'Healed — traffic restored to all healthy tasks.' })
       }
       wasHealthyRef.current = isHealthy
@@ -103,6 +120,8 @@ export default function BreakItDemo({ onContinue }) {
       breakStartedAt.current = Date.now()
       wasHealthyRef.current = false
       setBreaking(true)
+      setElapsedMs(0)
+      setLastHealDurationMs(null)
       trackBreakItResult('breaking')
       setMessage({ type: 'info', text: result.message || 'Task stopped — watch it recover below.' })
     } catch (err) {
@@ -137,6 +156,10 @@ export default function BreakItDemo({ onContinue }) {
 
   const online = status?.online
   const healthy = online && status?.runningCount >= status?.desiredCount
+  // 'breaking' the instant the click lands (task not yet stopped in ECS's
+  // own view), 'recovering' once ECS reports a replacement provisioning.
+  const phase = breaking ? (status?.pendingCount > 0 ? 'recovering' : 'breaking') : 'idle'
+  const architecturePhase = breaking ? phase : healthy ? 'healed' : 'idle'
 
   return (
     <motion.div
@@ -148,115 +171,156 @@ export default function BreakItDemo({ onContinue }) {
     >
       <AuroraBackground />
 
-      <div className="relative z-10 min-h-full flex flex-col items-center justify-center px-6 py-16">
-        <div className="w-full max-w-2xl">
-          <motion.p
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="text-center text-sm text-accent-cyan font-mono tracking-widest uppercase mb-4"
-          >
-            Live infrastructure demo
-          </motion.p>
-
-          <motion.h1
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, delay: 0.1 }}
-            className="text-center font-display text-3xl sm:text-4xl font-semibold text-white leading-tight"
-          >
-            This infrastructure heals itself.
-            <br />
-            <span className="text-text-secondary text-xl sm:text-2xl font-normal">
-              Break it and watch.
-            </span>
-          </motion.h1>
-
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.6, delay: 0.25 }}
-            className="mt-8 flex items-center justify-center gap-2"
-          >
-            <StatusPill online={online} healthy={healthy} status={status} />
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, delay: 0.35 }}
-            className="mt-8 flex flex-col items-center gap-4"
-          >
-            <MagneticButton
-              as="button"
-              type="button"
-              onClick={handleBreak}
-              disabled={breaking || !online}
-              data-cursor-hover
-              className="inline-flex items-center gap-2 rounded-full bg-white text-black text-base font-semibold px-8 py-4 transition-shadow hover:shadow-glow disabled:opacity-50 disabled:cursor-not-allowed"
+      <div className="relative z-10 min-h-full flex flex-col items-center px-6 py-16">
+        <div className="w-full max-w-6xl grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-8 items-start">
+          {/* Left half: the interactive demo itself */}
+          <div className="w-full max-w-2xl mx-auto lg:mx-0">
+            <motion.p
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+              className="text-center lg:text-left text-sm text-accent-cyan font-mono tracking-widest uppercase mb-4"
             >
-              <FiZap />
-              {breaking ? 'Recovering…' : 'Break Something'}
-            </MagneticButton>
+              Live infrastructure demo
+            </motion.p>
 
-            <AnimatePresence mode="wait">
-              {message && (
-                <motion.p
-                  key={message.text}
-                  initial={{ opacity: 0, y: 6 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -6 }}
-                  className={`text-sm ${
-                    message.type === 'error' ? 'text-red-400' : 'text-accent-cyan'
-                  }`}
-                >
-                  {message.text}
-                </motion.p>
+            <motion.h1
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.7, delay: 0.1 }}
+              className="text-center lg:text-left font-display text-3xl sm:text-4xl font-semibold text-white leading-tight"
+            >
+              This infrastructure heals itself.
+              <br />
+              <span className="text-text-secondary text-xl sm:text-2xl font-normal">
+                Break it and watch.
+              </span>
+            </motion.h1>
+
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.6, delay: 0.25 }}
+              className="mt-8 flex items-center justify-center lg:justify-start gap-2"
+            >
+              <StatusPill online={online} healthy={healthy} status={status} />
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.7, delay: 0.35 }}
+              className="mt-8 flex flex-col items-center lg:items-start gap-4"
+            >
+              <MagneticButton
+                as="button"
+                type="button"
+                onClick={handleBreak}
+                disabled={breaking || !online}
+                data-cursor-hover
+                className="inline-flex items-center gap-2 rounded-full bg-white text-black text-base font-semibold px-8 py-4 transition-shadow hover:shadow-glow disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                <FiZap />
+                {breaking ? 'Recovering…' : 'Break Something'}
+              </MagneticButton>
+
+              {breaking && <RecoveryTimer elapsedMs={elapsedMs} />}
+              {!breaking && lastHealDurationMs != null && (
+                <p className="text-xs text-text-secondary">
+                  Last recovery took <span className="text-accent-cyan font-mono">{formatDuration(lastHealDurationMs)}</span>
+                </p>
               )}
-            </AnimatePresence>
-          </motion.div>
 
+              <AnimatePresence mode="wait">
+                {message && (
+                  <motion.p
+                    key={message.text}
+                    initial={{ opacity: 0, y: 6 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -6 }}
+                    className={`text-sm ${
+                      message.type === 'error' ? 'text-red-400' : 'text-accent-cyan'
+                    }`}
+                  >
+                    {message.text}
+                  </motion.p>
+                )}
+              </AnimatePresence>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.7, delay: 0.45 }}
+              className="mt-10 grid grid-cols-3 gap-3"
+            >
+              <StatCard label="Times broken" value={status?.timesBroken ?? 0} />
+              <StatCard label="Times healed" value={status?.timesHealed ?? 0} />
+              <StatCard
+                label="Tasks running"
+                value={online ? `${status?.runningCount ?? 0}/${status?.desiredCount ?? 0}` : '—'}
+              />
+            </motion.div>
+
+            <RecoveryLog events={status?.recentEvents} />
+
+            <CostPanel cost={cost} />
+          </div>
+
+          {/* Right half: live visual diagram of the demo's own architecture */}
           <motion.div
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, delay: 0.45 }}
-            className="mt-10 grid grid-cols-3 gap-3"
+            transition={{ duration: 0.7, delay: 0.3 }}
+            className="w-full max-w-2xl mx-auto lg:mx-0 lg:sticky lg:top-16"
           >
-            <StatCard label="Times broken" value={status?.timesBroken ?? 0} />
-            <StatCard label="Times healed" value={status?.timesHealed ?? 0} />
-            <StatCard
-              label="Tasks running"
-              value={online ? `${status?.runningCount ?? 0}/${status?.desiredCount ?? 0}` : '—'}
-            />
-          </motion.div>
-
-          <RecoveryLog events={status?.recentEvents} />
-
-          <CostPanel cost={cost} />
-
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.6, delay: 0.6 }}
-            className="mt-10 flex flex-col items-center gap-2"
-          >
-            <button
-              type="button"
-              onClick={handleContinue}
-              data-cursor-hover
-              className="inline-flex items-center gap-1.5 text-sm text-text-secondary hover:text-white transition-colors"
-            >
-              Continue to portfolio <FiChevronDown />
-            </button>
-            <p className="text-xs text-text-secondary/70 text-center max-w-md">
-              Runs on a dedicated, isolated AWS ECS Fargate service.
-              {!ALWAYS_ON && ' Active 9am\u20139pm IST daily.'} It can't affect (and
-              isn't affected by) anything else on this site.
+            <p className="text-center lg:text-left text-xs text-text-secondary/80 mb-3 max-w-md mx-auto lg:mx-0">
+              Not sure what the log means? Watch it happen: when you break something,
+              the affected service below greys out and stops passing traffic — then
+              lights back up the moment it's replaced.
             </p>
+            <BreakItArchitecture phase={architecturePhase} />
           </motion.div>
         </div>
+
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.6, delay: 0.6 }}
+          className="mt-10 flex flex-col items-center gap-2"
+        >
+          <button
+            type="button"
+            onClick={handleContinue}
+            data-cursor-hover
+            className="inline-flex items-center gap-1.5 text-sm text-text-secondary hover:text-white transition-colors"
+          >
+            Continue to portfolio <FiChevronDown />
+          </button>
+          <p className="text-xs text-text-secondary/70 text-center max-w-md">
+            Runs on a dedicated, isolated AWS ECS Fargate service.
+            {!ALWAYS_ON && ' Active 9am\u20139pm IST daily.'} It can't affect (and
+            isn't affected by) anything else on this site.
+          </p>
+        </motion.div>
       </div>
     </motion.div>
+  )
+}
+
+function formatDuration(ms) {
+  const totalSeconds = Math.floor(ms / 1000)
+  const minutes = Math.floor(totalSeconds / 60)
+  const seconds = totalSeconds % 60
+  return minutes > 0 ? `${minutes}m ${seconds}s` : `${seconds}s`
+}
+
+function RecoveryTimer({ elapsedMs }) {
+  return (
+    <div className="inline-flex items-center gap-2 text-xs font-mono text-yellow-300">
+      <FiClock className="animate-pulse" />
+      <span>Recovering for {formatDuration(elapsedMs)}…</span>
+    </div>
   )
 }
 
