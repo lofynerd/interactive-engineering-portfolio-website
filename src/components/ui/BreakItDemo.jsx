@@ -180,8 +180,11 @@ export default function BreakItDemo({ onContinue }) {
 
       <div className="relative z-10 min-h-full flex flex-col items-center px-6 py-16">
         <div className="w-full max-w-6xl grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-8 items-start">
-          {/* Left half: the interactive demo itself */}
-          <div className="w-full max-w-2xl mx-auto lg:mx-0">
+          {/* Left half: the interactive demo itself.
+              On mobile (stacked, single column) this should come AFTER
+              the architecture diagram — order-2 puts it second there;
+              lg:order-1 restores it to the left column on desktop. */}
+          <div className="w-full max-w-2xl mx-auto lg:mx-0 order-2 lg:order-1">
             <motion.p
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
@@ -274,12 +277,15 @@ export default function BreakItDemo({ onContinue }) {
             <CostPanel cost={cost} />
           </div>
 
-          {/* Right half: live visual diagram of the demo's own architecture */}
+          {/* Right half: live visual diagram of the demo's own architecture.
+              On mobile this comes FIRST (order-1) so visitors see how the
+              system fits together before they even hit the button; on
+              desktop it moves back to the right column (lg:order-2). */}
           <motion.div
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, delay: 0.3 }}
-            className="w-full max-w-2xl mx-auto lg:mx-0 lg:sticky lg:top-16"
+            className="w-full max-w-2xl mx-auto lg:mx-0 lg:sticky lg:top-16 order-1 lg:order-2"
           >
             <p className="text-center lg:text-left text-xs text-text-secondary/80 mb-3 max-w-md mx-auto lg:mx-0">
               Not sure what the log means? Watch it happen: when you break something,
