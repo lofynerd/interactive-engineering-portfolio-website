@@ -9,7 +9,13 @@ const posthogKey = process.env.REACT_APP_PUBLIC_POSTHOG_KEY
 
 if (posthogKey) {
   posthog.init(posthogKey, {
-    api_host: process.env.REACT_APP_PUBLIC_POSTHOG_HOST || 'https://us.i.posthog.com',
+    // Routed through our own managed reverse proxy (n.arpanraj.space) so
+    // events aren't blocked by ad blockers that catch posthog.com by
+    // domain — PostHog's own docs cite a 10-30% capture uplift from this.
+    // ui_host must stay pointed at PostHog's real domain so in-app links
+    // (toolbar, etc.) still resolve correctly.
+    api_host: process.env.REACT_APP_PUBLIC_POSTHOG_HOST || 'https://n.arpanraj.space',
+    ui_host: 'https://us.posthog.com',
     defaults: '2026-05-30',
     // Covers: autocapture, session recording, pageview/pageleave,
     // heatmaps, rageclick detection, web vitals.
