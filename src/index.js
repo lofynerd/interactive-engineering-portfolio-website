@@ -28,6 +28,9 @@ if (posthogKey) {
       maskAllInputs: true,
       recordCrossOriginIframes: false,
     },
+    // Optimizations for ad blocker bypass
+    disable_external_dependency_loading: true, // Inline all scripts to avoid ad blocker detection by script names
+    disable_compression: true, // Send plain JSON for better proxy compatibility
   })
 } else if (process.env.NODE_ENV === 'development') {
   // eslint-disable-next-line no-console
