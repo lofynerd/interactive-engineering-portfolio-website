@@ -1,5 +1,4 @@
-import { motion } from 'framer-motion'
-import { skillCategories, learningNow } from '../data/skills'
+import { skillCategories } from '../data/skills'
 import RevealOnScroll from '../components/ui/RevealOnScroll'
 import TiltCard from '../components/ui/TiltCard'
 import { trackSkillCategoryViewed } from '../lib/analytics'
@@ -39,25 +38,6 @@ export default function Skills() {
             </RevealOnScroll>
           ))}
         </div>
-
-        <RevealOnScroll delay={0.2}>
-          <div className="mt-8 rounded-xl3 border border-accent-purple/30 bg-gradient-to-br from-accent-purple/10 via-transparent to-accent-cyan/10 p-6">
-            <p className="text-sm font-mono text-accent-cyan uppercase tracking-widest mb-3">
-              Currently learning
-            </p>
-            <div className="flex flex-wrap gap-3">
-              {learningNow.map((item) => (
-                <motion.span
-                  key={item}
-                  whileHover={{ y: -2 }}
-                  className="text-sm text-white bg-white/8 border border-border-subtle rounded-full px-4 py-2"
-                >
-                  {item}
-                </motion.span>
-              ))}
-            </div>
-          </div>
-        </RevealOnScroll>
       </div>
     </section>
   )

@@ -60,13 +60,13 @@ function App() {
             <main>
               <Hero />
               <About />
+              <Quote />
               <Experience />
               <Projects />
               <Skills />
               <Architecture />
               <Certifications />
               <Timeline />
-              <Quote />
               <Contact />
             </main>
             <Footer />
